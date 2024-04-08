@@ -3,7 +3,7 @@ const uniqueValidator = require("mongoose-unique-validator");
 const Schema = mongoose.Schema;
 
 
-const adminUserSchema = new Schema({
+const adminUsersSchema = new Schema({
   fullName: {
     type: String,
     reqiured: true,
@@ -35,4 +35,4 @@ const adminUserSchema = new Schema({
 
 adminUserSchema.plugin(uniqueValidator)
 
-module.exports = mongoose.model("AdminUser", adminUserSchema);
+module.exports = mongoose.model("AdminUser", adminUsersSchema);
