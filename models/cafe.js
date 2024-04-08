@@ -40,7 +40,12 @@ const cafesSchema = new Schema({
   openClose: {
     type : Date,
     required: true
+  },
+  image: {
+    type: String,
+    required: true
   }
+  // TODO create Goolge rating
   // TODO create reting and comment 
   // TODO create Food schema
   // Menu: {}
