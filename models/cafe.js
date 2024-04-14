@@ -15,16 +15,17 @@ const cafesSchema = new Schema({
     type: String,
     required: true,
   },
-  location: {
-    lat: {
-      type: Number,
-      required: true,
-    },
-    lng: {
-      type: Number,
-      required: true,
-    },
-  },
+  // maybe later
+  // location: {
+  //   lat: {
+  //     type: Number,
+  //     required: true,
+  //   },
+  //   lng: {
+  //     type: Number,
+  //     required: true,
+  //   },
+  // },
   phone: {
     type: Number,
     required: true
@@ -33,18 +34,18 @@ const cafesSchema = new Schema({
     type: Number,
     required: true
   },
-  alreadyExistCapcity: {
-    type: Number,
-    required: true,
-  },
-  openClose: {
-    type : Date,
-    required: true
-  },
-  image: {
-    type: String,
-    required: true
-  }
+  // alreadyExistCapcity: {
+  //   type: Number,
+  //   required: true,
+  // },
+  // openClose: {
+  //   type : Date,
+  //   required: true
+  // },
+  // image: {
+  //   type: String,
+  //   required: true
+  // }
   // TODO create Goolge rating
   // TODO create reting and comment 
   // TODO create Food schema
