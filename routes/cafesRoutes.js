@@ -1,12 +1,9 @@
 const express = require('express');
-
+const cafeControllers = require('../controllers/cafeControllers');
 const router = express.Router()
 
 
-router.get("/" , (req , res , next) => {
-  console.log("Get req to server");
-  res.json({message: "It works!!"})
-})
+router.get("/" ,  cafeControllers.getCafeList)
 
 
 module.exports = router
