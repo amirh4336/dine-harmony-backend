@@ -103,7 +103,7 @@ const deleteCafe = async (req, res, next) => {
 
   let place;
   try {
-    place = await Cafe.findById(placeId);
+    place = await Cafe.findById(placeId).populate("owner");
   } catch {
     const error = new HttpError(
       "Something went wrong, could not delete place.",
@@ -116,10 +116,31 @@ const deleteCafe = async (req, res, next) => {
     return next(new HttpError("Could not find place for this id"), 404);
   }
 
-  // if (place.creator.id !== req.userData.userId) {
-  //   const error = new HttpError("You are not allowed to delete this place.", 403);
-  //   return next(error);
-  // }
+  if (place.owner.id !== req.userData.userId) {
+    const error = new HttpError("You are not allowed to delete this place.", 403);
+    return next(error);
+  }
+
+  const session = await mongoose.startSession();
+  try {
+    //Create a session
+    // Start the transaction
+    session.startTransaction();
+    await place.deleteOne({ session });
+    place.owner.cafe = null;
+    await place.owner.save({ session });
+    await session.commitTransaction();
+  } catch (err) {
+    console.log(err);
+    // Abort the transaction if an error occurs
+    console.log(err);
+    await session.abortTransaction();
+    const error = new HttpError("deleting place failed, please try again", 500);
+    return next(error);
+  } finally {
+    // End the session
+    session.endSession();
+  }
 
   
   res.status(200).json({ message: "Deleted place." });
@@ -127,3 +148,4 @@ const deleteCafe = async (req, res, next) => {
 
 exports.getCafeList = getCafes
 exports.createCafe = createCafe
+exports.deleteCafe = deleteCafe

@@ -10,5 +10,7 @@ router.use(checkAuth)
 
 router.post("/create" ,  cafeControllers.createCafe)
 
+router.delete("/:pid", cafeControllers.deleteCafe);
+
 
 module.exports = router
