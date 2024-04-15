@@ -18,7 +18,7 @@ const adminUserSchema = new Schema({
     unique: true,
   },
   password: {
-    type: Number,
+    type: String,
     required: true,
     minlength: 6,
   },
@@ -29,7 +29,6 @@ const adminUserSchema = new Schema({
   },
   cafe: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
     ref: "Cafe",
   },
 });

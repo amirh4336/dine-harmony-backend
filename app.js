@@ -3,12 +3,15 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
 const cafesRoutes = require("./routes/cafesRoutes");
+const adminUserRoutes = require("./routes/adminUserRoutes");
 
 const app = express();
 
 app.use(bodyParser.json());
 
 app.use("/api/cafes", cafesRoutes);
+
+app.use("/api/admin", adminUserRoutes);
 
 // app.use((req, res, next) => {
 //   const error = new HttpError("Could not find this route.", 404);
