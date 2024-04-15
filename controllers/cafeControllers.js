@@ -44,6 +44,8 @@ const createCafe = async (req, res, next) => {
   const { name, description, address , phone , capacity } = req.body;
 
 
+  console.log(req.userData.userId);
+
   const createdPlace = new Cafe({
     name,
     description,
@@ -79,7 +81,7 @@ const createCafe = async (req, res, next) => {
 
   try {
     await createdPlace.save({ session });
-    user.cafeId(createdPlace);
+    user.cafe = createdPlace;
     await user.save({ session });
     await session.commitTransaction();
   } catch (err) {
