@@ -46,15 +46,16 @@ const cafesSchema = new Schema({
   //   type: String,
   //   required: true
   // }
-  // TODO create Goolge rating
+  // TODO create Google rating
   // TODO create reting and comment 
   // TODO create Food schema
   // Menu: {}
 
-  // TODO create adminUser schema
-  // owner: {
-
-  // }
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "AdminUser",
+  }
 });
 
 module.exports = mongoose.model("Cafe", cafesSchema);
