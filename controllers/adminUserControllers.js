@@ -93,12 +93,12 @@ const loginAdmin = async (req, res, next) => {
     next(new HttpError("Invalid inputs passed, please check your data", 422));
   }
 
-  const { email, password } = req.body;
+  const { phone, password } = req.body;
 
   let existsingUser;
 
   try {
-    existsingUser = await AdminUser.findOne({ email });
+    existsingUser = await AdminUser.findOne({ phone });
   } catch {
     const error = new HttpError(
       "logging in failed, please try again later.",
@@ -129,7 +129,7 @@ const loginAdmin = async (req, res, next) => {
   let token;
   try {
     token = jwt.sign(
-      { userId: existsingUser.id, email: existsingUser.email },
+      { userId: existsingUser.id, phone: existsingUser.phone },
       process.env.JWR_KEY,
       { expiresIn: "1h" }
     );
@@ -140,7 +140,7 @@ const loginAdmin = async (req, res, next) => {
 
   res.json({
     userId: existsingUser.id,
-    email: existsingUser.email,
+    phone: existsingUser.phone,
     token: token,
   });
 };

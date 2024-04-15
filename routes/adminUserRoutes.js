@@ -6,4 +6,6 @@ router.get("/users" ,  adminUserControllers.getUsers)
 
 router.post("/signup", adminUserControllers.signup);
 
+router.post("/login", adminUserControllers.login);
+
 module.exports = router;
