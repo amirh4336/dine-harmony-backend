@@ -8,9 +8,10 @@ const AdminUser = require("../models/adminUser")
 const getFoods = async (req, res, next) => {
 
   let user;
-
+  let foodMenu;
   try {
     user = await AdminUser.findById(req.userData.userId).populate("cafe");
+    await user.cafe.populate("menu")
   } catch (err) {
     console.log(err);
     const error = new HttpError(
@@ -30,7 +31,6 @@ const getFoods = async (req, res, next) => {
   });
 };
 
-// TODO CRAETE
 const createFood = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
