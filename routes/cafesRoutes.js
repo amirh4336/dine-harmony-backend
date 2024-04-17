@@ -9,6 +9,7 @@ router.get("/" ,  cafeControllers.getCafeList)
 router.use(checkAuth)
 
 router.post("/create" ,  cafeControllers.createCafe)
+router.patch("/:pid" ,  cafeControllers.updateCafe)
 
 router.delete("/:pid", cafeControllers.deleteCafe);
 

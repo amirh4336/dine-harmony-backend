@@ -98,6 +98,56 @@ const createCafe = async (req, res, next) => {
   res.status(201).json({ place: createdPlace });
 };
 
+
+const updateCafe = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log(errors);
+    return next(
+      new HttpError("Invalid inputs passed, please check your data", 422)
+    );
+  }
+
+  const { name, description , address, phone , capacity } = req.body;
+  const placeId = req.params.pid;
+
+  let place;
+  try {
+    place = await Cafe.findById(placeId);
+  } catch {
+    const error = new HttpError(
+      "Something went wrong, could not update place.",
+      500
+    );
+    return next(error);
+  }
+
+  console.log(place);
+
+  if (place.owner.toString() !== req.userData.userId) {
+    const error = new HttpError("You are not allowed to edit this place.", 401);
+    return next(error);
+  }
+
+  place.name = name;
+  place.address = address;
+  place.phone = phone;
+  place.capacity = capacity;
+  place.description = description;
+
+  try {
+    await place.save();
+  } catch {
+    const error = new HttpError(
+      "Something went wrong, could not update place.",
+      500
+    );
+    return next(error);
+  }
+
+  res.status(200).json({ place: place.toObject({ getters: true }) });
+};
+
 const deleteCafe = async (req, res, next) => {
   const placeId = req.params.pid;
 
@@ -149,3 +199,4 @@ const deleteCafe = async (req, res, next) => {
 exports.getCafeList = getCafes
 exports.createCafe = createCafe
 exports.deleteCafe = deleteCafe
+exports.updateCafe = updateCafe
