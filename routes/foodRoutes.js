@@ -6,7 +6,8 @@ const router = express.Router()
 
 
 router.use(checkAuth)
-router.get("/" ,  foodController.getFoods)
+
+router.get("/" ,  foodController.getFoodList)
 
 router.post("/create" ,  foodController.createFood)
 router.patch("/:fid" ,  foodController.updateFood)

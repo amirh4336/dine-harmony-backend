@@ -6,32 +6,30 @@ const AdminUser = require("../models/adminUser")
 
 const getFoods = async (req, res, next) => {
 
-  console.log("test");
+  let user;
 
-  let userWithPlaces;
   try {
-    userWithPlaces = await Cafe.find()
-    console.log(userWithPlaces);
+    user = await AdminUser.findById(req.userData.userId).populate("cafe");
   } catch (err) {
+    console.log(err);
     const error = new HttpError(
-      "Fetching places failed, please try again later.",
+      "Creatinng place failed, please try again",
       500
     );
     return next(error);
   }
-  if (!userWithPlaces) {
-    return next(
-      new HttpError("Could not find a place for the provided id.", 404)
-    );
+
+  if (!user) {
+    const error = new HttpError("create place failed , please try again");
+    return next(error);
   }
 
   res.json({
-    places: userWithPlaces.map((place) =>
-      place.toObject({ getters: true })
-    ),
+    food: user.cafe.Menu,
   });
 };
 
+// TODO CRAETE
 const createFood = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -98,7 +96,7 @@ const createFood = async (req, res, next) => {
   res.status(201).json({ place: createdPlace });
 };
 
-
+// TODO UPDATE
 const updateFood = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -148,6 +146,7 @@ const updateFood = async (req, res, next) => {
   res.status(200).json({ place: place.toObject({ getters: true }) });
 };
 
+// TODO DELETE
 const deleteFood = async (req, res, next) => {
   const placeId = req.params.pid;
 

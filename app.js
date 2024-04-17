@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 
 const cafesRoutes = require("./routes/cafesRoutes");
 const adminUserRoutes = require("./routes/adminUserRoutes");
+const foodRoutes = require("./routes/foodRoutes");
 
 const app = express();
 
@@ -13,7 +14,7 @@ app.use("/api/cafes", cafesRoutes);
 
 app.use("/api/admin", adminUserRoutes);
 
-app.use("/api/food", adminUserRoutes);
+app.use("/api/food", foodRoutes);
 
 // app.use((req, res, next) => {
 //   const error = new HttpError("Could not find this route.", 404);
