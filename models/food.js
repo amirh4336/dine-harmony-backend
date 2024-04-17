@@ -11,11 +11,14 @@ const foodSchema = new Schema({
     type: String,
     require: false
   },
-  
   price: {
     type : String,
     require: true
   },
+  cafe: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Cafe",
+  }
   // TODO
   // image:{
   //   type: String,

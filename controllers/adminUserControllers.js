@@ -131,7 +131,7 @@ const loginAdmin = async (req, res, next) => {
     token = jwt.sign(
       { userId: existsingUser.id, phone: existsingUser.phone },
       process.env.JWR_KEY,
-      { expiresIn: "1h" }
+      { expiresIn: "10d" }
     );
   } catch (err) {
     const error = new HttpError("loggin in failed, please try again", 500);

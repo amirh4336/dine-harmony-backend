@@ -7,11 +7,9 @@ const AdminUser = require("../models/adminUser")
 
 const getFoods = async (req, res, next) => {
 
-  let user;
-  let foodMenu;
+  let cafe;
   try {
-    user = await AdminUser.findById(req.userData.userId).populate("cafe");
-    await user.cafe.populate("menu")
+    cafe = await Cafe.findById(req.params.pid).populate("menu");
   } catch (err) {
     console.log(err);
     const error = new HttpError(
@@ -21,13 +19,13 @@ const getFoods = async (req, res, next) => {
     return next(error);
   }
 
-  if (!user) {
-    const error = new HttpError("create place failed , please try again");
+  if (!cafe) {
+    const error = new HttpError("can't getList of Menu, please try again");
     return next(error);
   }
 
   res.json({
-    food: user.cafe.menu,
+    food: cafe.menu,
   });
 };
 
@@ -43,13 +41,6 @@ const createFood = async (req, res, next) => {
   const { name, description, price } = req.body;
 
 
-  const createdFood = new Food({
-    name,
-    description,
-    price
-  });
-
-
   let user;
 
   try {
@@ -67,6 +58,13 @@ const createFood = async (req, res, next) => {
     const error = new HttpError("create place failed , please try again");
     return next(error);
   }
+
+  const createdFood = new Food({
+    name,
+    description,
+    price,
+    cafe: user.cafe,
+  });
 
   // Create a session
   const session = await mongoose.startSession();
@@ -102,21 +100,21 @@ const updateFood = async (req, res, next) => {
     );
   }
 
-  const { name, description , address, phone , capacity } = req.body;
-  const placeId = req.params.pid;
+  const { name , price ,description} = req.body;
+  const foodId = req.params.fid;
 
-  let place;
+  let food;
   try {
-    place = await Cafe.findById(placeId);
+    food = await Food.findById(foodId);
   } catch {
     const error = new HttpError(
-      "Something went wrong, could not update place.",
+      "Something went wrong, could not update food.",
       500
     );
     return next(error);
   }
 
-  console.log(place);
+  console.log(food);
 
   if (place.owner.toString() !== req.userData.userId) {
     const error = new HttpError("You are not allowed to edit this place.", 401);

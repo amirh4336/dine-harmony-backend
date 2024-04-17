@@ -4,10 +4,9 @@ const foodController = require('../controllers/foodController');
 const router = express.Router()
 
 
+router.get("/:pid" ,  foodController.getFoodList)
 
 router.use(checkAuth)
-
-router.get("/" ,  foodController.getFoodList)
 
 router.post("/create" ,  foodController.createFood)
 router.patch("/:fid" ,  foodController.updateFood)
