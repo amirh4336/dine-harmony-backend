@@ -50,7 +50,7 @@ const cafesSchema = new Schema({
   // TODO create reting and comment 
 
 
-  Menu: [
+  menu: [
     {
       type: mongoose.Schema.Types.ObjectId,
       required: true,

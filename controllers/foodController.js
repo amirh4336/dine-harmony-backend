@@ -2,6 +2,7 @@ const { validationResult } = require("express-validator");
 const HttpError = require("../models/http-errors");
 const mongoose = require("mongoose");
 const Cafe = require('../models/cafe');
+const Food = require('../models/food');
 const AdminUser = require("../models/adminUser")
 
 const getFoods = async (req, res, next) => {
@@ -25,7 +26,7 @@ const getFoods = async (req, res, next) => {
   }
 
   res.json({
-    food: user.cafe.Menu,
+    food: user.cafe.menu,
   });
 };
 
@@ -39,25 +40,20 @@ const createFood = async (req, res, next) => {
     );
   }
 
-  const { name, description, address , phone , capacity } = req.body;
+  const { name, description, price } = req.body;
 
 
-  console.log(req.userData.userId);
-
-  const createdPlace = new Cafe({
+  const createdFood = new Food({
     name,
     description,
-    address,
-    phone,
-    capacity,
-    owner: req.userData.userId,
+    price
   });
 
 
   let user;
 
   try {
-    user = await AdminUser.findById(req.userData.userId);
+    user = await AdminUser.findById(req.userData.userId).populate("cafe");
   } catch (err) {
     console.log(err);
     const error = new HttpError(
@@ -78,22 +74,22 @@ const createFood = async (req, res, next) => {
   session.startTransaction();
 
   try {
-    await createdPlace.save({ session });
-    user.cafe = createdPlace;
-    await user.save({ session });
+    await createdFood.save({ session });
+    user.cafe.menu.push(createdFood);
+    await user.cafe.save({ session });
     await session.commitTransaction();
   } catch (err) {
     console.log(err);
     // Abort the transaction if an error occurs
     await session.abortTransaction();
-    const error = new HttpError("Creating place failed, please try again", 500);
+    const error = new HttpError("Baking Food failed, please try again", 500);
     return next(error);
   } finally {
     // End the session
     session.endSession();
   }
 
-  res.status(201).json({ place: createdPlace });
+  res.status(201).json({ food: createdFood });
 };
 
 // TODO UPDATE
