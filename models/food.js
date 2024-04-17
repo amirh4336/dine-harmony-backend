@@ -11,10 +11,16 @@ const foodSchema = new Schema({
     type: String,
     require: false
   },
-  image:{
-    type: String,
-    require: false
-  }
+  
+  price: {
+    type : String,
+    require: true
+  },
+  // TODO
+  // image:{
+  //   type: String,
+  //   require: false
+  // },
 })
 
 

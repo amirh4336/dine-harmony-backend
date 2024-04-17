@@ -48,8 +48,15 @@ const cafesSchema = new Schema({
   // }
   // TODO create Google rating
   // TODO create reting and comment 
-  // TODO create Food schema
-  // Menu: {}
+
+
+  Menu: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Food",
+    },
+  ],
 
   owner: {
     type: mongoose.Schema.Types.ObjectId,
