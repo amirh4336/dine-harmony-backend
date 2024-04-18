@@ -15,6 +15,9 @@ const foodSchema = new Schema({
     type : String,
     require: true
   },
+  image: {
+    type: String,
+  },
   cafe: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Cafe",

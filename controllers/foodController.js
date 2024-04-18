@@ -40,6 +40,8 @@ const createFood = async (req, res, next) => {
 
   const { name, description, price } = req.body;
 
+  let imageAddress = req.file?.path;
+
 
   let user;
 
@@ -63,6 +65,7 @@ const createFood = async (req, res, next) => {
     name,
     description,
     price,
+    image: imageAddress?.replaceAll("\\", "/"),
     cafe: user.cafe,
   });
 
@@ -102,6 +105,7 @@ const updateFood = async (req, res, next) => {
 
   const { name , price ,description} = req.body;
   const foodId = req.params.fid;
+  let imageAddress = req.file?.path;
 
   let food;
   try {
@@ -114,8 +118,6 @@ const updateFood = async (req, res, next) => {
     return next(error);
   }
 
-  console.log(food);
-
   // if (place.owner.toString() !== req.userData.userId) {
   //   const error = new HttpError("You are not allowed to edit this place.", 401);
   //   return next(error);
@@ -124,6 +126,9 @@ const updateFood = async (req, res, next) => {
   food.name = name;
   food.price = price;
   food.description = description;
+  if (imageAddress) {
+    food.image = imageAddress?.replaceAll("\\", "/");
+  }
 
   try {
     await food.save();
@@ -186,7 +191,6 @@ const deleteFood = async (req, res, next) => {
     session.endSession();
   }
 
-  
   res.status(200).json({ message: "Deleted food." });
 };
 
