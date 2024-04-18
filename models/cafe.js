@@ -42,10 +42,9 @@ const cafesSchema = new Schema({
   //   type : Date,
   //   required: true
   // },
-  // image: {
-  //   type: String,
-  //   required: true
-  // }
+  image: {
+    type: String,
+  },
   // TODO create Google rating
   // TODO create reting and comment 
 

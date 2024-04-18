@@ -1,17 +1,13 @@
 const { validationResult } = require("express-validator");
 const HttpError = require("../models/http-errors");
 const mongoose = require("mongoose");
-const Cafe = require('../models/cafe');
-const AdminUser = require("../models/adminUser")
+const Cafe = require("../models/cafe");
+const AdminUser = require("../models/adminUser");
 
 const getCafes = async (req, res, next) => {
-
-  console.log("test");
-
   let userWithPlaces;
   try {
-    userWithPlaces = await Cafe.find()
-    console.log(userWithPlaces);
+    userWithPlaces = await Cafe.find();
   } catch (err) {
     const error = new HttpError(
       "Fetching places failed, please try again later.",
@@ -26,9 +22,7 @@ const getCafes = async (req, res, next) => {
   }
 
   res.json({
-    places: userWithPlaces.map((place) =>
-      place.toObject({ getters: true })
-    ),
+    places: userWithPlaces.map((place) => place.toObject({ getters: true })),
   });
 };
 
@@ -41,20 +35,19 @@ const createCafe = async (req, res, next) => {
     );
   }
 
-  const { name, description, address , phone , capacity } = req.body;
+  const { name, description, address, phone, capacity } = req.body;
 
-
-  console.log(req.userData.userId);
+  let imageAddress = req.file?.path;
 
   const createdPlace = new Cafe({
     name,
     description,
     address,
     phone,
+    image: imageAddress?.replaceAll("\\", "/"),
     capacity,
     owner: req.userData.userId,
   });
-
 
   let user;
 
@@ -98,7 +91,6 @@ const createCafe = async (req, res, next) => {
   res.status(201).json({ place: createdPlace });
 };
 
-
 const updateCafe = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -108,7 +100,7 @@ const updateCafe = async (req, res, next) => {
     );
   }
 
-  const { name, description , address, phone , capacity } = req.body;
+  const { name, description, address, phone, capacity } = req.body;
   const placeId = req.params.pid;
 
   let place;
@@ -122,18 +114,22 @@ const updateCafe = async (req, res, next) => {
     return next(error);
   }
 
-  console.log(place);
-
   if (place.owner.toString() !== req.userData.userId) {
+    console.log(place.owner.toString(), req.userData.userId);
     const error = new HttpError("You are not allowed to edit this place.", 401);
     return next(error);
   }
+
+  let imageAddress = req.file?.path;
 
   place.name = name;
   place.address = address;
   place.phone = phone;
   place.capacity = capacity;
   place.description = description;
+  if (imageAddress) {
+    place.image = imageAddress?.replaceAll("\\", "/");
+  }
 
   try {
     await place.save();
@@ -167,7 +163,10 @@ const deleteCafe = async (req, res, next) => {
   }
 
   if (place.owner.id !== req.userData.userId) {
-    const error = new HttpError("You are not allowed to delete this place.", 403);
+    const error = new HttpError(
+      "You are not allowed to delete this place.",
+      403
+    );
     return next(error);
   }
 
@@ -192,11 +191,10 @@ const deleteCafe = async (req, res, next) => {
     session.endSession();
   }
 
-  
   res.status(200).json({ message: "Deleted place." });
 };
 
-exports.getCafeList = getCafes
-exports.createCafe = createCafe
-exports.deleteCafe = deleteCafe
-exports.updateCafe = updateCafe
+exports.getCafeList = getCafes;
+exports.createCafe = createCafe;
+exports.deleteCafe = deleteCafe;
+exports.updateCafe = updateCafe;
