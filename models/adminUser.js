@@ -12,6 +12,10 @@ const adminUserSchema = new Schema({
     type: String,
     reqiured: false,
   },
+  image: {
+    type: String,
+    required: true,
+  },
   phone: {
     type: Number,
     required: true,

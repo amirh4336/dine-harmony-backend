@@ -57,6 +57,7 @@ const signupAdmin = async (req, res, next) => {
   const createdUser = new AdminUser({
     fullName,
     certificateId,
+    image: req.file.path,
     phone,
     email,
     password: hashedPassword,
