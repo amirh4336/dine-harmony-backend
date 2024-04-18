@@ -5,7 +5,7 @@ const Cafe = require('../models/cafe');
 const Food = require('../models/food');
 const AdminUser = require("../models/adminUser")
 
-const getFoods = async (req, res, next) => {
+const getFoodsByCafeId = async (req, res, next) => {
 
   let cafe;
   try {
@@ -116,28 +116,26 @@ const updateFood = async (req, res, next) => {
 
   console.log(food);
 
-  if (place.owner.toString() !== req.userData.userId) {
-    const error = new HttpError("You are not allowed to edit this place.", 401);
-    return next(error);
-  }
+  // if (place.owner.toString() !== req.userData.userId) {
+  //   const error = new HttpError("You are not allowed to edit this place.", 401);
+  //   return next(error);
+  // }
 
-  place.name = name;
-  place.address = address;
-  place.phone = phone;
-  place.capacity = capacity;
-  place.description = description;
+  food.name = name;
+  food.price = price;
+  food.description = description;
 
   try {
-    await place.save();
+    await food.save();
   } catch {
     const error = new HttpError(
-      "Something went wrong, could not update place.",
+      "Something went wrong, could not update food.",
       500
     );
     return next(error);
   }
 
-  res.status(200).json({ place: place.toObject({ getters: true }) });
+  res.status(200).json({ food: food.toObject({ getters: true }) });
 };
 
 // TODO DELETE
@@ -189,7 +187,7 @@ const deleteFood = async (req, res, next) => {
   res.status(200).json({ message: "Deleted place." });
 };
 
-exports.getFoodList = getFoods
+exports.getFoodList = getFoodsByCafeId
 exports.createFood = createFood
 exports.deleteFood = deleteFood
 exports.updateFood = updateFood
