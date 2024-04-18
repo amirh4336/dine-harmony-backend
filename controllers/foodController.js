@@ -140,43 +140,46 @@ const updateFood = async (req, res, next) => {
 
 // TODO DELETE
 const deleteFood = async (req, res, next) => {
-  const placeId = req.params.pid;
+  const foodId = req.params.fid;
 
-  let place;
+  let food;
+  let cafe
   try {
-    place = await Cafe.findById(placeId).populate("owner");
+    food = await Food.findById(foodId).populate("cafe");
   } catch {
     const error = new HttpError(
-      "Something went wrong, could not delete place.",
+      "Something went wrong, could not delete food.",
       500
     );
     return next(error);
   }
 
-  if (!place) {
-    return next(new HttpError("Could not find place for this id"), 404);
+  if (!food) {
+    return next(new HttpError("Could not find food for this id"), 404);
   }
 
-  if (place.owner.id !== req.userData.userId) {
-    const error = new HttpError("You are not allowed to delete this place.", 403);
-    return next(error);
-  }
+  // if (food.cafe.owner._id !== req.userData.userId) {
+  //   console.log(cafe);
+  //   console.log(food.cafe.owner , req.userData.userId);
+  //   const error = new HttpError("You are not allowed to delete this food.", 403);
+  //   return next(error);
+  // }
 
   const session = await mongoose.startSession();
   try {
     //Create a session
     // Start the transaction
     session.startTransaction();
-    await place.deleteOne({ session });
-    place.owner.cafe = null;
-    await place.owner.save({ session });
+    await food.deleteOne({ session });
+    food.cafe.menu.pull(food);
+    await food.cafe.save({ session });
     await session.commitTransaction();
   } catch (err) {
     console.log(err);
     // Abort the transaction if an error occurs
     console.log(err);
     await session.abortTransaction();
-    const error = new HttpError("deleting place failed, please try again", 500);
+    const error = new HttpError("deleting food failed, please try again", 500);
     return next(error);
   } finally {
     // End the session
@@ -184,7 +187,7 @@ const deleteFood = async (req, res, next) => {
   }
 
   
-  res.status(200).json({ message: "Deleted place." });
+  res.status(200).json({ message: "Deleted food." });
 };
 
 exports.getFoodList = getFoodsByCafeId
