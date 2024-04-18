@@ -53,11 +53,12 @@ const signupAdmin = async (req, res, next) => {
   } catch (error) {
     return next(new HttpError("Could not create user, please try again", 500));
   }
+  let imageAddress = req.file.path
 
   const createdUser = new AdminUser({
     fullName,
     certificateId,
-    image: req.file.path,
+    image: imageAddress.replaceAll("\\" , "/"),
     phone,
     email,
     password: hashedPassword,
